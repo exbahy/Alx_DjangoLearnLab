@@ -1,8 +1,14 @@
 # Update Book Instance
 
-```python
+```python  <-- أضف هذا السطر
 from bookshelf.models import Book
 book_to_update = Book.objects.get(title="1984") # استخدم العنوان القديم للبحث
 book_to_update.title = "Nineteen Eighty-Four"
 book_to_update.save()
 print(f"Updated book title: {book_to_update.title}")
+```  <-- أضف هذا السطر
+
+# Expected Output:
+```   <-- أضف هذا السطر
+Updated book title: Nineteen Eighty-Four
+```   <-- أضف هذا السطر
