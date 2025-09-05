@@ -24,11 +24,11 @@ def run_queries():
 
     # --- تنفيذ الاستعلامات المطلوبة ---
     
-    # الاستعلام الأول: هات كل كتب مؤلف معين (ده التعديل المطلوب)
+    # الاستعلام الأول: هات كل كتب مؤلف معين
     print("--- Querying all books by a specific author (Taha Hussein) ---")
     author_name = 'Taha Hussein'
-    author = Author.objects.get(name=author_name) # <-- الخطوة 1: هنجيب المؤلف كـ object
-    author_books = Book.objects.filter(author=author) # <-- الخطوة 2: هنستخدم الـ object عشان نعمل filter
+    author = Author.objects.get(name=author_name)
+    author_books = Book.objects.filter(author=author)
     for book in author_books:
         print(f"- {book.title}")
     print("-" * 20)
@@ -41,10 +41,10 @@ def run_queries():
         print(f"- {book.title}")
     print("-" * 20)
 
-    # الاستعلام الثالث: هات أمين المكتبة بتاع مكتبة معينة
+    # الاستعلام الثالث: هات أمين المكتبة بتاع مكتبة معينة (ده التعديل المطلوب)
     print("\n--- Retrieving the librarian for a library (Central Library) ---")
-    library_name_for_librarian = 'Central Library'
-    librarian_found = Librarian.objects.get(library__name=library_name_for_librarian)
+    library_obj = Library.objects.get(name='Central Library') # <-- الخطوة 1: هنجيب المكتبة كـ object
+    librarian_found = Librarian.objects.get(library=library_obj) # <-- الخطوة 2: هنستخدم الـ object نفسه هنا
     print(f"The librarian is: {librarian_found.name}")
     print("-" * 20)
 
