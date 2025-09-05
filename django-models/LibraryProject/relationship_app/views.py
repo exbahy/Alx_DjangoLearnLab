@@ -1,5 +1,8 @@
 from django.shortcuts import render
-from .models import Book, Library
+# --- ده التعديل المطلوب ---
+from .models import Book
+from .models import Library # <--- دلوقتي السطر اللي هو بيدور عليه بقى موجود لوحده
+# -------------------------
 from django.views.generic import DetailView
 
 # 1. الـ View الأول: من نوع Function-based
