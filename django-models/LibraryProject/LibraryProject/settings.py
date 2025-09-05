@@ -122,8 +122,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# السطر ده بيحدد الصفحة اللي اليوزر هيروحها بعد تسجيل الدخول بنجاح
-LOGIN_REDIRECT_URL = '/app/books/'
-
-# السطر ده اختياري بس كويس نضيفه، بيحدد الصفحة اللي هيروحها بعد تسجيل الخروج
-LOGOUT_REDIRECT_URL = '/app/login/'
+# السطر ده بيحدد الصفحة اللي اليوزر هيروحها بعد تسجيل الدخول بنجا
