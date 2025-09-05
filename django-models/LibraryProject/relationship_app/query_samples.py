@@ -24,21 +24,22 @@ def run_queries():
 
     # --- تنفيذ الاستعلامات المطلوبة ---
     
-    # الاستعلام الأول: هات كل كتب مؤلف معين
+    # الاستعلام الأول: هات كل كتب مؤلف معين (ده التعديل المطلوب)
     print("--- Querying all books by a specific author (Taha Hussein) ---")
     author_name = 'Taha Hussein'
-    author_books = Book.objects.filter(author__name=author_name)
+    author = Author.objects.get(name=author_name) # <-- الخطوة 1: هنجيب المؤلف كـ object
+    author_books = Book.objects.filter(author=author) # <-- الخطوة 2: هنستخدم الـ object عشان نعمل filter
     for book in author_books:
         print(f"- {book.title}")
     print("-" * 20)
 
-    # الاستعلام الثاني: هات كل الكتب في مكتبة معينة (ده اللي صلحناه)
+    # الاستعلام الثاني: هات كل الكتب في مكتبة معينة
     print("\n--- Listing all books in a library (Central Library) ---")
     library_name = 'Central Library'
     library_to_check = Library.objects.get(name=library_name)
     for book in library_to_check.books.all():
         print(f"- {book.title}")
-    print("-" * 20)  # <-- بص على المسافة هنا، رجعت لورا عشان تبقى مع الـ print والـ for
+    print("-" * 20)
 
     # الاستعلام الثالث: هات أمين المكتبة بتاع مكتبة معينة
     print("\n--- Retrieving the librarian for a library (Central Library) ---")
