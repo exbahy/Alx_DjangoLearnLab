@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf', # <<<<<<<<<<<<<<<<< أضف هذا السطر هنا <<<<<<<<<<<<<<<<<
-    'relationship_app', # <<<<<<<<<<<<<<<<< أضف هذا السطر هنا <<<<<<<<<<<<<<<<<
-
 ]
 
 MIDDLEWARE = [
