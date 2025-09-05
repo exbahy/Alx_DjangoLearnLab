@@ -1,21 +1,15 @@
 from django.shortcuts import render
 from .models import Book
 from .models import Library
-# --- ده التعديل الوحيد والمطلوب ---
-from django.views.generic.detail import DetailView # <--- المسار الطويل اللي هو عايزه
-# -----------------------------------
+from django.views.generic.detail import DetailView
 
 
-# 1. الـ View الأول: من نوع Function-based
-# وظيفته يعرض كل الكتب الموجودة في الداتا بيز
-def all_books(request):
+def list_books(request): # <--- التعديل هنا
     books = Book.objects.all()
     context = {'books': books}
     return render(request, 'relationship_app/list_books.html', context)
 
 
-# 2. الـ View التاني: من نوع Class-based
-# وظيفته يعرض تفاصيل مكتبة واحدة معينة بالكتب اللي فيها
 class LibraryDetailView(DetailView):
     model = Library
     template_name = 'relationship_app/library_detail.html'
