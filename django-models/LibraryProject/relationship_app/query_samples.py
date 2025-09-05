@@ -1,15 +1,13 @@
 # في ملف relationship_app/query_samples.py
 
+import os
+import django
 import sys
 from pathlib import Path
 
-# سطرين جداد: بنضيف مجلد المشروع الرئيسي لمسارات بايثون
-# Path(__file__).resolve().parent.parent بيوصل للمجلد اللي فيه manage.py (اللي هو LibraryProject)
+# سطرين جداد: بنضيف مجلد المشروع الرئيسي لمسارات بايثون (لو لسه موجودين، خليهم)
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-import os
-import django
 
-# ضبط إعدادات Django عشان السكريبت ده يقدر يوصل للموديلز
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')
 django.setup()
 
@@ -30,39 +28,50 @@ def run_queries():
     print(f"Books created: {book1.title}, {book2.title}, {book3.title}")
 
     library1 = Library.objects.create(name="Central Library")
-    library1.books.add(book1, book2) # إضافة الكتب للمكتبة (ManyToMany)
+    library1.books.add(book1, book2)
     library2 = Library.objects.create(name="Community Reading Hub")
     library2.books.add(book3)
     print(f"Libraries created: {library1.name}, {library2.name}")
 
     librarian1 = Librarian.objects.create(name="Alice Johnson", library=library1)
-    print(f"Librarian created: {librarian1.name} for {librarian1.library.name}")
-    librarian2 = Librarian.objects.create(name="Bob Williams", library=library2)
-    print(f"Librarian created: {librarian2.name} for {librarian2.library.name}")
+    librarian2 = Librarian.objects.create(name="Bob Williams", library=library2) # إضافة أمين المكتبة الثاني
+    print(f"Librarians created: {librarian1.name} for {librarian1.library.name}, {librarian2.name} for {librarian2.library.name}")
 
     print("\n--- Query Results ---")
 
     # Query 1: Query all books by a specific author (ForeignKey)
     print("\nQuery 1: Books by Jane Doe")
-    jane_books = Book.objects.filter(author__name="Jane Doe") # استخدام __name للوصول لاسم المؤلف
-    for book in jane_books:
+    # <<<<<<<<<<<<<<< التعديل هنا (عشان يتطابق مع النمط المطلوب) <<<<<<<<<<<<<<<
+    author_name_query = "Jane Doe"
+    books_by_specific_author = Book.objects.filter(author__name=author_name_query)
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    for book in books_by_specific_author:
         print(f"- {book.title} (Published: {book.publication_year})")
 
     # Query 2: List all books in a library (ManyToManyField)
     print("\nQuery 2: Books in Central Library")
-    central_library = Library.objects.get(name="Central Library")
-    books_in_central = central_library.books.all()
-    for book in books_in_central:
+    # <<<<<<<<<<<<<<< التعديل هنا (عشان يتطابق مع النمط المطلوب) <<<<<<<<<<<<<<<
+    library_name_query = "Central Library"
+    library_instance = Library.objects.get(name=library_name_query)
+    books_in_library = library_instance.books.all()
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    for book in books_in_library:
         print(f"- {book.title} by {book.author.name}")
 
     # Query 3: Retrieve the librarian for a library (OneToOneField)
     print("\nQuery 3: Librarian for Community Reading Hub")
-    community_library = Library.objects.get(name="Community Reading Hub")
-    community_librarian = community_library.librarian # الوصول لمدير المكتبة مباشرة
-    print(f"- Librarian Name: {community_librarian.name}")
+    # <<<<<<<<<<<<<<< التعديل هنا (عشان يتطابق مع النمط المطلوب) <<<<<<<<<<<<<<<
+    target_library = Library.objects.get(name="Community Reading Hub")
+    librarian_for_library = target_library.librarian
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    print(f"- Librarian Name: {librarian_for_library.name}")
 
     print("\n--- Queries Completed ---")
 
 if __name__ == '__main__':
+    # عشان متكررش البيانات كل مرة، ممكن تمسحها قبل ما تعملها تاني
+    # Author.objects.all().delete()
+    # Book.objects.all().delete()
+    # Library.objects.all().delete()
+    # Librarian.objects.all().delete()
     run_queries()
-    
