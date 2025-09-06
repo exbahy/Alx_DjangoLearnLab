@@ -1,67 +1,13 @@
-#
-# بداية الملف (الكود القديم موجود هنا)
-#
-from django.db import models
+# في ملف relationship_app/urls.py
 
-# موديل المؤلف
-class Author(models.Model):
-    name = models.CharField(max_length=100)
-    def __str__(self):
-        return self.name
+from django.urls import path
+from . import views # استيراد views من نفس المجلد
 
-# موديل الكتاب
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.title
+app_name = 'relationship_app' # مهم لتحديد اسم التطبيق في الـ URLs
 
-# موديل المكتبة
-class Library(models.Model):
-    name = models.CharField(max_length=100)
-    books = models.ManyToManyField(Book)
-    def __str__(self):
-        return self.name
-
-# موديل أمين المكتبة
-class Librarian(models.Model):
-    name = models.CharField(max_length=100)
-    library = models.OneToOneField(Library, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-
-#
-# --- بداية الكود الجديد ---
-#
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-class UserProfile(models.Model):
-    ADMIN = 'Admin'
-    LIBRARIAN = 'Librarian'
-    MEMBER = 'Member'
-    
-    ROLE_CHOICES = [
-        (ADMIN, 'Admin'),
-        (LIBRARIAN, 'Librarian'),
-        (MEMBER, 'Member'),
-    ]
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=MEMBER)
-
-    def __str__(self):
-        return f'{self.user.username} - {self.role}'
-
-# Signals to create/update UserProfile automatically
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
-# --- نهاية الكود الجديد ---
-#
+urlpatterns = [
+    path('', views.index, name='index'), # صفحة رئيسية بسيطة للتطبيق
+    path('add/', views.add_book_view, name='add_book'),
+    path('change/<int:pk>/', views.change_book_view, name='change_book'), # <int:pk> لالتقاط رقم الكتاب
+    path('delete/<int:pk>/', views.delete_book_view, name='delete_book'), # <int:pk> لالتقاط رقم الكتاب
+]
