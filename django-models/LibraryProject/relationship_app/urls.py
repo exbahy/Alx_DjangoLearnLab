@@ -1,11 +1,67 @@
-from django.urls import path
-from django.contrib.auth import views as auth_views
-from . import views
+#
+# بداية الملف (الكود القديم موجود هنا)
+#
+from django.db import models
 
-urlpatterns = [
-    path('books/', views.list_books, name='all_books'),
-    path('library/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'),
-    path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
-]
+# موديل المؤلف
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+# موديل الكتاب
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
+
+# موديل المكتبة
+class Library(models.Model):
+    name = models.CharField(max_length=100)
+    books = models.ManyToManyField(Book)
+    def __str__(self):
+        return self.name
+
+# موديل أمين المكتبة
+class Librarian(models.Model):
+    name = models.CharField(max_length=100)
+    library = models.OneToOneField(Library, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+#
+# --- بداية الكود الجديد ---
+#
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class UserProfile(models.Model):
+    ADMIN = 'Admin'
+    LIBRARIAN = 'Librarian'
+    MEMBER = 'Member'
+    
+    ROLE_CHOICES = [
+        (ADMIN, 'Admin'),
+        (LIBRARIAN, 'Librarian'),
+        (MEMBER, 'Member'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=MEMBER)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.role}'
+
+# Signals to create/update UserProfile automatically
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
+# --- نهاية الكود الجديد ---
+#
