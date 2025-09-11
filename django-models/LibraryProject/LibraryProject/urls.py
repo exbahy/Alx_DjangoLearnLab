@@ -1,11 +1,26 @@
-# في ملف LibraryProject/urls.py
+"""
+URL configuration for LibraryProject project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+# C:\Users\user\Alx_DjangoLearnLab\django-models\LibraryProject\urls.py
 
 from django.contrib import admin
-from django.urls import path, include # تأكد من وجود 'include' هنا
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('books/', include('bookshelf.urls')), # هذا السطر قد يكون موجوداً إذا كنت قد أنجزت المهمة 1
-    # <<<<<<<<<<<<<<<<< هذا هو السطر الذي يربط مسارات العلاقة الجديدة <<<<<<<<<<<<<<<<<
+    path('bookshelf/', include('bookshelf.urls')),
     path('relationships/', include('relationship_app.urls')),
 ]

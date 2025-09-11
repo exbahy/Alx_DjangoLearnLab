@@ -1,45 +1,33 @@
-# في ملف relationship_app/models.py
+# C:\Users\user\Alx_DjangoLearnLab\django-models\LibraryProject\relationship_app\models.py
 
 from django.db import models
+from django.contrib.auth import get_user_model # الأفضل استخدامها للوصول لموديل المستخدم
 
-# 1. Author Model
+# User = get_user_model() # لا نحتاجها هنا لأن لا يوجد ربط مباشر بموديل المستخدم في هذا التطبيق
+
 class Author(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
-# 2. Book Model
-class Book(models.Model):
+class Book(models.Model): # هذا هو موديل الكتاب الخاص بـ relationship_app (مختلف عن bookshelf.Book)
     title = models.CharField(max_length=200)
-    # ForeignKey to Author (Many-to-One: A book has one author, an author can have many books)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
     publication_year = models.IntegerField(default=2000)
-
-    class Meta: # <<<<<<<<<<<<< إضافة الـ Meta Class للصلاحيات المخصصة
-        permissions = [
-            ("can_add_book", "Can add book"),
-            ("can_change_book", "Can change book"),
-            ("can_delete_book", "Can delete book"),
-        ]
-        # يمكنك إضافة verbose_name_plural = "Books" هنا إذا أردت اسماً جمعياً أفضل في الـ Admin
 
     def __str__(self):
         return f"{self.title} by {self.author.name}"
 
-# 3. Library Model
 class Library(models.Model):
     name = models.CharField(max_length=100)
-    # ManyToManyField to Book (Many-to-Many: A library can have many books, a book can be in many libraries)
     books = models.ManyToManyField(Book, related_name='libraries')
 
     def __str__(self):
         return self.name
 
-# 4. Librarian Model
 class Librarian(models.Model):
     name = models.CharField(max_length=100)
-    # OneToOneField to Library (One-to-One: A librarian manages one library, a library has one librarian)
     library = models.OneToOneField(Library, on_delete=models.CASCADE)
 
     def __str__(self):

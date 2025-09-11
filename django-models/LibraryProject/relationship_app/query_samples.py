@@ -1,53 +1,74 @@
-import os
-import sys
-import django
+# C:\Users\user\Alx_DjangoLearnLab\django-models\LibraryProject\relationship_app\query_samples.py
 
-sys.path.append(os.path.abspath('.'))
+import os
+import django
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')
 django.setup()
 
-from relationship_app.models import Author, Book, Library, Librarian
+from relationship_app.models import Author, Book, Library, Librarian # هنا نستورد Book من relationship_app
 
 def run_queries():
-    # --- إضافة بيانات تجريبية ---
-    print(">>> Adding sample data...")
-    author1, _ = Author.objects.get_or_create(name='Taha Hussein')
-    book1, _ = Book.objects.get_or_create(title='Al-Ayyam', author=author1)
-    book2, _ = Book.objects.get_or_create(title='The Future of Culture in Egypt', author=author1)
-    
-    library1, _ = Library.objects.get_or_create(name='Central Library')
-    library1.books.add(book1, book2)
-    
-    librarian1, _ = Librarian.objects.get_or_create(name='Mohammed', library=library1)
-    print(">>> Sample data added.\n")
+    print("--- Running Sample Queries ---")
 
-    # --- تنفيذ الاستعلامات المطلوبة ---
-    
-    # الاستعلام الأول: هات كل كتب مؤلف معين
-    print("--- Querying all books by a specific author (Taha Hussein) ---")
-    author_name = 'Taha Hussein'
-    author = Author.objects.get(name=author_name)
-    author_books = Book.objects.filter(author=author)
-    for book in author_books:
-        print(f"- {book.title}")
-    print("-" * 20)
+    # Clear existing data to avoid duplicates (مهم جداً عند تشغيل السكريبت أكثر من مرة)
+    # تفعيل هذه الأسطر إذا كنت تريد مسح البيانات في كل مرة تشغل فيها السكريبت
+    Author.objects.all().delete()
+    Book.objects.all().delete()
+    Library.objects.all().delete()
+    Librarian.objects.all().delete()
 
-    # الاستعلام الثاني: هات كل الكتب في مكتبة معينة
-    print("\n--- Listing all books in a library (Central Library) ---")
-    library_name = 'Central Library'
-    library_to_check = Library.objects.get(name=library_name)
-    for book in library_to_check.books.all():
-        print(f"- {book.title}")
-    print("-" * 20)
+    # Create Sample Data
+    print("\nCreating Sample Data...")
+    author_john = Author.objects.create(name="John Smith")
+    author_jane = Author.objects.create(name="Jane Doe")
 
-    # الاستعلام الثالث: هات أمين المكتبة بتاع مكتبة معينة (ده التعديل المطلوب)
-    print("\n--- Retrieving the librarian for a library (Central Library) ---")
-    library_obj = Library.objects.get(name='Central Library') # <-- الخطوة 1: هنجيب المكتبة كـ object
-    librarian_found = Librarian.objects.get(library=library_obj) # <-- الخطوة 2: هنستخدم الـ object نفسه هنا
-    print(f"The librarian is: {librarian_found.name}")
-    print("-" * 20)
+    book_python = Book.objects.create(title="Python Basics", author=author_john, publication_year=2020)
+    book_django = Book.objects.create(title="Django Advanced", author=author_john, publication_year=2021)
+    book_java = Book.objects.create(title="Java Fundamentals", author=author_jane, publication_year=2019)
 
-# السطر ده عشان لما نشغل الملف، ينفذ الفانكشن اللي فوق
+    library_central = Library.objects.create(name="Central Library")
+    library_central.books.add(book_python, book_django)
+
+    library_community = Library.objects.create(name="Community Hub Library")
+    library_community.books.add(book_java)
+
+    librarian_alice = Librarian.objects.create(name="Alice Green", library=library_central)
+    librarian_bob = Librarian.objects.create(name="Bob White", library=library_community)
+
+    print("Sample data created successfully.")
+
+    print("\n--- Query Results ---")
+
+    # Query 1: Query all books by a specific author.
+    print("\nTask: Query all books by a specific author.")
+    specific_author_name = "John Smith"
+    books_by_author = Book.objects.filter(author__name=specific_author_name)
+    print(f"  Books by '{specific_author_name}':")
+    for book in books_by_author:
+        print(f"    - {book.title} (Author: {book.author.name})")
+
+    # Query 2: List all books in a library.
+    print("\nTask: List all books in a library.")
+    library_name = "Central Library"
+    library_instance = Library.objects.get(name=library_name)
+    books_in_library = library_instance.books.all()
+    print(f"  Books in '{library_name}':")
+    for book in books_in_library:
+        print(f"    - {book.title}")
+
+    # Query 3: Retrieve the librarian for a library.
+    print("\nTask: Retrieve the librarian for a library.")
+    target_library_name = "Community Hub Library"
+    target_library_instance = Library.objects.get(name=target_library_name)
+    librarian_info = target_library_instance.librarian
+    print(f"  Librarian for '{target_library_name}': {librarian_info.name}")
+
+    print("\n--- Queries Completed ---")
+
 if __name__ == '__main__':
     run_queries()
