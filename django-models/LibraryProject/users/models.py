@@ -1,9 +1,8 @@
 # C:\Users\user\Alx_DjangoLearnLab\django-models\LibraryProject\users\models.py
 
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager # تأكد من BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-# Manager الخاص بموديل المستخدم المخصص
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -33,7 +32,6 @@ class CustomUserManager(BaseUserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
-# موديل المستخدم المخصص
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(blank=True, null=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)

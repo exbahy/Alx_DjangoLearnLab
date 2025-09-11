@@ -1,9 +1,7 @@
 # C:\Users\user\Alx_DjangoLearnLab\django-models\LibraryProject\relationship_app\models.py
 
 from django.db import models
-from django.contrib.auth import get_user_model # الأفضل استخدامها للوصول لموديل المستخدم
-
-# User = get_user_model() # لا نحتاجها هنا لأن لا يوجد ربط مباشر بموديل المستخدم في هذا التطبيق
+from django.contrib.auth import get_user_model
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -11,7 +9,7 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
-class Book(models.Model): # هذا هو موديل الكتاب الخاص بـ relationship_app (مختلف عن bookshelf.Book)
+class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
     publication_year = models.IntegerField(default=2000)

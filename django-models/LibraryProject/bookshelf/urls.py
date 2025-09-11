@@ -2,14 +2,14 @@
 
 from django.urls import path
 from django.http import HttpResponse # استيراد HttpResponse
-from . import views # استيراد views من نفس المجلد
+# from . import views # لا نحتاجها هنا إذا كانت View مباشرة في urls.py
 
 app_name = 'bookshelf'
 
-# دالة index هنا يمكن أن تكون View بسيطة إذا كانت موجودة في bookshelf/views.py
+# دالة index هنا يمكن أن تكون View بسيطة
 def index(request):
     return HttpResponse("Welcome to Bookshelf App!")
 
 urlpatterns = [
-    path('', index, name='index'), # صفحة رئيسية بسيطة للتطبيق
+    path('', index, name='index'),
 ]

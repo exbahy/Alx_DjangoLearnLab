@@ -10,13 +10,12 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')
 django.setup()
 
-from relationship_app.models import Author, Book, Library, Librarian # هنا نستورد Book من relationship_app
+from relationship_app.models import Author, Book, Library, Librarian
 
 def run_queries():
     print("--- Running Sample Queries ---")
 
-    # Clear existing data to avoid duplicates (مهم جداً عند تشغيل السكريبت أكثر من مرة)
-    # تفعيل هذه الأسطر إذا كنت تريد مسح البيانات في كل مرة تشغل فيها السكريبت
+    # Clear existing data to avoid duplicates
     Author.objects.all().delete()
     Book.objects.all().delete()
     Library.objects.all().delete()

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+%rsi6+fc14qg@ifzr56)wdh3@szlww^wi!&2o23ds+mtja^$f'
+SECRET_KEY = 'django-insecure-^51jak=e6pl$qtl89bmbmmuinrpy+_#$7)6@f^e4kf770ele2u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     'relationship_app', # تطبيق العلاقات المتقدمة
     'users',            # تطبيق المستخدم المخصص
 ]
+
 AUTH_USER_MODEL = 'users.CustomUser' # <<<<<<<<<<<<< إضافة هذا السطر لموديل المستخدم المخصص
 
 MIDDLEWARE = [
