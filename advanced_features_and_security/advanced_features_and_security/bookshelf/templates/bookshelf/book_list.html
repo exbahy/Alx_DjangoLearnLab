@@ -1,0 +1,8 @@
+<h1>Bookshelf</h1>
+<ul>
+  {% for book in books %}
+    <li><a href="{% url 'bookshelf:book_detail' book.pk %}">{{ book.title }}</a> by {{ book.author }}</li>
+  {% empty %}
+    <li>No books available.</li>
+  {% endfor %}
+</ul>
