@@ -1,6 +1,3 @@
-# --- Step 2: Update Settings to Use the Custom User Model ---
-# Specify that the custom user model will be the default model for the project
-AUTH_USER_MODEL = 'users.CustomUser'
 """
 Django settings for LibraryProject project.
 
@@ -13,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,7 +42,7 @@ INSTALLED_APPS = [
     'users',            # تطبيق المستخدم المخصص
 ]
 
-AUTH_USER_MODEL = 'users.CustomUser' # <<<<<<<<<<<<< إضافة هذا السطر لموديل المستخدم المخصص
+AUTH_USER_MODEL = 'users.CustomUser'  # Custom user model
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -118,12 +116,15 @@ USE_I18N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
+
+# Media files (profile photos)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
