@@ -58,3 +58,5 @@ def book_search_unsafe(request):
 	# For the purpose of the project, we comment out the unsafe code and show the safe alternative.
 	# The documentation is the key deliverable here.
 	return render(request, 'bookshelf/book_list.html', {})
+
+from .forms import ExampleForm
