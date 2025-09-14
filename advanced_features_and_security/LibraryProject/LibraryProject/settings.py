@@ -139,7 +139,36 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
+
 AUTH_USER_MODEL = "bookshelf.CustomUser"
+
+# ===============================================================================
+# SECURITY SETTINGS FOR PRODUCTION (Task 3)
+# These settings should be active when DEBUG is False.
+# ===============================================================================
+
+# In a real production environment, DEBUG should be False.
+# DEBUG = False
+# ALLOWED_HOSTS = ['your.domain.com']
+
+if 'PRODUCTION' in os.environ or not DEBUG:
+    # --- Step 1: Configure Django for HTTPS Support ---
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # --- Step 2: Enforce Secure Cookies ---
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # --- Step 3: Implement Secure Headers ---
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_CONTENT_TYPE_NOSNIF = True
+    # The SECURE_BROWSER_XSS_FILTER is deprecated and no longer necessary in modern browsers.
+    # A strong Content Security Policy (CSP), configured in Task 2, is the modern replacement.
+    # We include it here for completeness as per the task requirements.
+    SECURE_BROWSER_XSS_FILTER = True
 
 
 # Default primary key field type
