@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^51jak=e6pl$qtl89bmbmmuinrpy+_#$7)6@f^e4kf770ele2u'
+SECRET_KEY = 'django-insecure-vf4+(k@j&x#c+z9wx&q!9eb3ku(cu))*z4r!b+=epz)*4+xgy#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,19 +29,17 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+
 INSTALLED_APPS = [
+    'relationship_app',
+    'bookshelf',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookshelf',        # تطبيق من مهمة سابقة
-    'relationship_app', # تطبيق العلاقات المتقدمة
-    'users',            # تطبيق المستخدم المخصص
 ]
-
-AUTH_USER_MODEL = 'users.CustomUser'  # Custom user model
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -116,15 +113,23 @@ USE_I18N = True
 USE_TZ = True
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-STATIC_URL = 'static/'
 
-# Media files (profile photos)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "LibraryProject" / "static",
+]
+
+# ده اللي collectstatic هيجمع فيه كل الملفات
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+AUTH_USER_MODEL = "bookshelf.CustomUser"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
