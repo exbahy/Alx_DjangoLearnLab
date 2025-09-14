@@ -152,6 +152,9 @@ AUTH_USER_MODEL = "bookshelf.CustomUser"
 # ALLOWED_HOSTS = ['your.domain.com']
 
 if 'PRODUCTION' in os.environ or not DEBUG:
+    # This tells Django to trust the 'X-Forwarded-Proto' header from a proxy (like Nginx).
+    # It's crucial for SECURE_SSL_REDIRECT to work correctly behind a reverse proxy.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # --- Step 1: Configure Django for HTTPS Support ---
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
