@@ -13,7 +13,7 @@ class BookAPITestCase(APITestCase):
         self.user = User.objects.create_user(username="testuser", password="testpass")
 
     def test_create_book(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="testpass")
         url = reverse('book-list')
         data = {
             "title": "New Book",
@@ -31,7 +31,7 @@ class BookAPITestCase(APITestCase):
         self.assertGreaterEqual(len(response.data), 1)
 
     def test_update_book(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="testpass")
         url = reverse('book-detail', args=[self.book.id])
         data = {"title": "Updated Book", "publication_year": 2022, "author": self.author.id}
         response = self.client.put(url, data)
@@ -39,7 +39,7 @@ class BookAPITestCase(APITestCase):
         self.assertEqual(response.data["title"], "Updated Book")
 
     def test_delete_book(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="testpass")
         url = reverse('book-detail', args=[self.book.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
