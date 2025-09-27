@@ -3,5 +3,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("api.urls")),  # إضافة روابط الـ API
+    path("api/", include("api.urls")),   # ✅ ربط تطبيق api بالـ project
 ]
