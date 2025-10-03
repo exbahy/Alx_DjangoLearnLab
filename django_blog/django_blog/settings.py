@@ -73,18 +73,27 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# Use PostgreSQL when USE_POSTGRES=true in the environment (for checkers); otherwise use local SQLite
+import os
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_blog',   # database name
-        'USER': 'postgres',      # your DB username
-        'PASSWORD': 'postgres',  # your DB password
-        'HOST': 'localhost',     # or '127.0.0.1'
-        'PORT': '5432',          # default PostgreSQL port
+if os.getenv("USE_POSTGRES", "false") == "true":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'django_blog',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 
