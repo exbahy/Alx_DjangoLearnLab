@@ -105,13 +105,14 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 	form_class = CommentForm
 
 	def form_valid(self, form):
-		post = Post.objects.get(pk=self.kwargs.get('post_id'))
+		post_pk = self.kwargs.get('pk')
+		post = Post.objects.get(pk=post_pk)
 		form.instance.post = post
 		form.instance.author = self.request.user
 		return super().form_valid(form)
 
 	def get_success_url(self):
-		return reverse_lazy('post-detail', kwargs={'pk': self.kwargs.get('post_id')})
+		return reverse_lazy('post-detail', kwargs={'pk': self.kwargs.get('pk')})
 
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
