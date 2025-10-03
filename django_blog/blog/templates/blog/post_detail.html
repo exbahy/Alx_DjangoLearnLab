@@ -7,6 +7,6 @@
   <div>{{ post.content }}</div>
 </article>
 {% if user == post.author %}
-  <p><a href="{% url 'posts:update' post.pk %}">Edit</a> | <a href="{% url 'posts:delete' post.pk %}">Delete</a></p>
+  <p><a href="{% url 'post-update' post.pk %}">Edit</a> | <a href="{% url 'post-delete' post.pk %}">Delete</a></p>
 {% endif %}
 {% endblock %}
