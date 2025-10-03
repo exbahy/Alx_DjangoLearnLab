@@ -93,6 +93,21 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 		return post.author == self.request.user
 
 
+class PostByTagListView(ListView):
+	"""ListView filtered by tag slug (uses taggit tag slugs).
+
+	Reuses the `post_list.html` template and exposes `posts` in context.
+	"""
+	model = Post
+	template_name = 'blog/post_list.html'
+	context_object_name = 'posts'
+
+	def get_queryset(self):
+		tag_slug = self.kwargs.get('tag_slug')
+		# Filter posts by tag slug using taggit relationship
+		return Post.objects.filter(tags__slug=tag_slug).distinct()
+
+
 def posts_by_tag(request, tag_name):
 	posts = Post.objects.filter(tags__name__iexact=tag_name).distinct()
 	return render(request, 'blog/tag_posts.html', {'posts': posts, 'tag_name': tag_name})
