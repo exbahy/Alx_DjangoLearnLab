@@ -6,8 +6,8 @@ from .forms import RegisterForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 
 # Create your views here.
 
@@ -60,6 +60,13 @@ class PostDetailView(DetailView):
 	template_name = 'blog/post_detail.html'
 	context_object_name = 'post'
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		from .forms import CommentForm
+		context['comment_form'] = CommentForm()
+		context['comments'] = self.object.comments.all()
+		return context
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
 	model = Post
@@ -91,3 +98,43 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	def test_func(self):
 		post = self.get_object()
 		return post.author == self.request.user
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+	model = Comment
+	form_class = CommentForm
+
+	def form_valid(self, form):
+		post = Post.objects.get(pk=self.kwargs.get('post_id'))
+		form.instance.post = post
+		form.instance.author = self.request.user
+		return super().form_valid(form)
+
+	def get_success_url(self):
+		return reverse_lazy('post-detail', kwargs={'pk': self.kwargs.get('post_id')})
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+	model = Comment
+	form_class = CommentForm
+	template_name = 'blog/comment_form.html'
+	fields = ['content']
+
+	def get_success_url(self):
+		return reverse_lazy('post-detail', kwargs={'pk': self.get_object().post.pk})
+
+	def test_func(self):
+		comment = self.get_object()
+		return comment.author == self.request.user
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+	model = Comment
+	template_name = 'blog/comment_confirm_delete.html'
+
+	def get_success_url(self):
+		return reverse_lazy('post-detail', kwargs={'pk': self.get_object().post.pk})
+
+	def test_func(self):
+		comment = self.get_object()
+		return comment.author == self.request.user

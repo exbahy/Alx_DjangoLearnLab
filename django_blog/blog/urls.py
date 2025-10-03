@@ -14,4 +14,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
+    # Comment routes (nested under post)
+    path('post/<int:post_id>/comments/new/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('post/comments/<int:pk>/edit/', views.CommentUpdateView.as_view(), name='comment-edit'),
+    path('post/comments/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
 ]
