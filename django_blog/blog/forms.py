@@ -12,16 +12,10 @@ class RegisterForm(UserCreationForm):
 
 
 # Post form for creating/updating posts
-from .models import Post, Tag
+from .models import Post
 
 
 class PostForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        required=False,
-        widget=forms.SelectMultiple(attrs={'size': 6}),
-    )
-
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']
