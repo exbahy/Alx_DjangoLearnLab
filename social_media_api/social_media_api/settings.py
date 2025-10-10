@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'posts',
 ]
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 
