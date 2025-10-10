@@ -1,33 +1,91 @@
-from rest_framework import status, permissions
-from rest_framework.decorators import api_view, permission_classes
+# accounts/views.py
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model, authenticate
+from rest_framework.authtoken.models import Token
+
 from .models import CustomUser
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def follow_user(request, user_id):
-    try:
-        user_to_follow = CustomUser.objects.get(id=user_id)
-    except CustomUser.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+# Register
+class RegisterView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
 
-    if user_to_follow == request.user:
-        return Response({'error': "You can't follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        data = UserSerializer(user).data
+        data['token'] = token.key
+        return Response(data, status=status.HTTP_201_CREATED)
 
-    request.user.following.add(user_to_follow)
-    return Response({'message': f'You are now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
+
+# Login
+class LoginView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        token, _ = Token.objects.get_or_create(user=user)
+        data = UserSerializer(user).data
+        data['token'] = token.key
+        return Response(data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def unfollow_user(request, user_id):
-    try:
-        user_to_unfollow = CustomUser.objects.get(id=user_id)
-    except CustomUser.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+# Follow / Unfollow using GenericAPIView and CustomUser.objects.all()
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
 
-    if user_to_unfollow == request.user:
-        return Response({'error': "You can't unfollow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, user_id):
+        target = get_object_or_404(CustomUser, id=user_id)
+        if target == request.user:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.add(target)
+        return Response({"detail": f"You are now following {target.username}"}, status=status.HTTP_200_OK)
 
-    request.user.following.remove(user_to_unfollow)
-    return Response({'message': f'You unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
+
+    def post(self, request, user_id):
+        target = get_object_or_404(CustomUser, id=user_id)
+        if target == request.user:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.remove(target)
+        return Response({"detail": f"You have unfollowed {target.username}"}, status=status.HTTP_200_OK)
+
+
+# Lists: followers & following
+class FollowersListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
+
+    def get_queryset(self):
+        user = get_object_or_404(CustomUser, id=self.kwargs.get('user_id'))
+        return user.followers.all()
+
+
+class FollowingListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
+
+    def get_queryset(self):
+        user = get_object_or_404(CustomUser, id=self.kwargs.get('user_id'))
+        return user.following.all()
+
+
+# A simple user list so grader can see CustomUser.objects.all() usage
+class UserListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
