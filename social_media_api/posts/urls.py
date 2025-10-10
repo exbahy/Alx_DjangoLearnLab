@@ -1,7 +1,6 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from .views import FeedView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/accounts/', include('accounts.urls')),  # ✅ add this line
+    path('feed/', FeedView.as_view(), name='user-feed'),
 ]
