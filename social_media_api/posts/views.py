@@ -32,6 +32,20 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+from rest_framework import generics
+
+
+class FeedListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # posts authored by users the current user follows
+        following_qs = user.following.all()  # queryset of Users
+        return Post.objects.filter(author__in=following_qs).order_by('-created_at')
 from django.shortcuts import render
 
 # Create your views here.

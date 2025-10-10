@@ -42,3 +42,13 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid credentials")
+
+
+class UserBriefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'profile_picture', 'bio']
+
+
+class FollowActionSerializer(serializers.Serializer):
+    target_user_id = serializers.IntegerField()
